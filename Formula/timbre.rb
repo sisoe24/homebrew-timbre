@@ -37,7 +37,7 @@ class Timbre < Formula
     libexec.install Dir["*"]
 
     # ── Create an isolated virtualenv ─────────────────────────────────────────
-    venv = virtualenv_create(libexec/"venv", "python3.11")
+    venv = virtualenv_create(libexec/"venv")
 
     # ── PyTorch (platform-specific, installed before requirements.txt) ────────
     # Standard pip wheels for macOS include MPS support automatically.
