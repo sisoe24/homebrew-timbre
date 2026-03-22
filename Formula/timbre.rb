@@ -16,8 +16,8 @@
 class Timbre < Formula
   desc "ML-powered audio analyzer — intelligent sound tagging via CLAP"
   homepage "https://github.com/sisoe24/timbre"
-  url "https://github.com/sisoe24/timbre/archive/refs/tags/v0.1.0.tar.gz"
-  sha256 "11f7ec9d40080f514a9857e146290d644f243011f45f122051f19ba230d5fd15"
+  url "https://github.com/sisoe24/timbre/archive/refs/tags/v0.2.0.tar.gz"
+  sha256 "10b3a492ecb4ac07de416e8c83cecfb13f2ad18bccfe571302420dee81ddc524"
   license "MIT"
 
   # ── System dependencies ────────────────────────────────────────────────────
