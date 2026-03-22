@@ -14,7 +14,6 @@
 # ============================================================================
 
 class Timbre < Formula
-  include Language::Python::Virtualenv
   desc "ML-powered audio analyzer — intelligent sound tagging via CLAP"
   homepage "https://github.com/sisoe24/timbre"
   url "https://github.com/sisoe24/timbre/archive/refs/tags/v0.1.0.tar.gz"
@@ -31,27 +30,26 @@ class Timbre < Formula
   def install
     # macOS only for now (MPS / Apple Silicon path; Linux/CUDA support is separate)
     raise "Timbre currently only supports macOS." unless OS.mac?
+
     # ── Copy source into Homebrew's libexec ───────────────────────────────────
-    # libexec keeps our files out of the global prefix so they don't conflict
-    # with anything else the user has installed.
     libexec.install Dir["*"]
 
-    # ── Create an isolated virtualenv ─────────────────────────────────────────
-    venv = virtualenv_create(libexec/"venv")
+    # ── Create an isolated virtualenv directly via Python ────────────────────
+    python = Formula["python@3.11"].opt_bin/"python3.11"
+    system python, "-m", "venv", libexec/"venv"
 
-    # ── PyTorch (platform-specific, installed before requirements.txt) ────────
-    # Standard pip wheels for macOS include MPS support automatically.
-    # torch >= 2.6.0 is required (CVE-2025-32434 torch.load safety fix).
-    venv.pip_install "torch>=2.6.0", "torchaudio"
+    pip = libexec/"venv/bin/pip"
+    system pip, "install", "--upgrade", "pip"
+
+    # ── PyTorch (before requirements.txt to avoid version conflicts) ──────────
+    system pip, "install", "torch>=2.6.0", "torchaudio"
 
     # ── Remaining Python dependencies ─────────────────────────────────────────
-    # Strip comments, blank lines, and the torch lines (already installed above)
-    # so pip doesn't try to reinstall them.
-    reqs = (libexec/"requirements.txt").readlines
-              .reject { |l| l.strip.empty? || l.start_with?("#") || l =~ /^torch/ }
-              .join
+    # Strip comments, blank lines, and torch lines (already installed above).
+    requirements = (libexec/"requirements.txt").readlines
+    reqs = requirements.reject { |l| l.strip.empty? || l.start_with?("#") || l =~ /^torch/ }.join
     (buildpath/"filtered_requirements.txt").write(reqs)
-    venv.pip_install buildpath/"filtered_requirements.txt"
+    system pip, "install", "-r", buildpath/"filtered_requirements.txt"
 
     # ── Wrapper script ─────────────────────────────────────────────────────────
     # Creates the `timbre` command in /usr/local/bin (or Homebrew's bin prefix).
