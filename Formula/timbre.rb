@@ -14,6 +14,7 @@
 # ============================================================================
 
 class Timbre < Formula
+  include Language::Python::Virtualenv
   desc "ML-powered audio analyzer — intelligent sound tagging via CLAP"
   homepage "https://github.com/sisoe24/timbre"
   url "https://github.com/sisoe24/timbre/archive/refs/tags/v0.1.0.tar.gz"
