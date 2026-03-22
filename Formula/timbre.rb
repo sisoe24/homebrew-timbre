@@ -28,10 +28,9 @@ class Timbre < Formula
   depends_on "libsndfile"
   depends_on "python@3.11"
 
-  # macOS only for now (MPS / Apple Silicon path; Linux/CUDA support is separate)
-  depends_on :macos
-
   def install
+    # macOS only for now (MPS / Apple Silicon path; Linux/CUDA support is separate)
+    raise "Timbre currently only supports macOS." unless OS.mac?
     # ── Copy source into Homebrew's libexec ───────────────────────────────────
     # libexec keeps our files out of the global prefix so they don't conflict
     # with anything else the user has installed.
@@ -43,7 +42,7 @@ class Timbre < Formula
     # ── PyTorch (platform-specific, installed before requirements.txt) ────────
     # Standard pip wheels for macOS include MPS support automatically.
     # torch >= 2.6.0 is required (CVE-2025-32434 torch.load safety fix).
-    venv.pip_install "torch>=2.6.0 torchaudio"
+    venv.pip_install "torch>=2.6.0", "torchaudio"
 
     # ── Remaining Python dependencies ─────────────────────────────────────────
     # Strip comments, blank lines, and the torch lines (already installed above)
@@ -52,7 +51,7 @@ class Timbre < Formula
               .reject { |l| l.strip.empty? || l.start_with?("#") || l =~ /^torch/ }
               .join
     (buildpath/"filtered_requirements.txt").write(reqs)
-    venv.pip_install_and_link buildpath/"filtered_requirements.txt"
+    venv.pip_install buildpath/"filtered_requirements.txt"
 
     # ── Wrapper script ─────────────────────────────────────────────────────────
     # Creates the `timbre` command in /usr/local/bin (or Homebrew's bin prefix).
