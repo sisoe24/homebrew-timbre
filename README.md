@@ -15,13 +15,21 @@ brew install timbre
 
 ```bash
 # Analyze a single file
-timbre path/to/file.wav
+timbre analyze path/to/file.wav
 
 # Save results as Markdown
-timbre path/to/file.mp3 --output-dir ./out --markdown
+timbre analyze path/to/file.mp3 --output-dir ./out --markdown
 
 # Analyze a whole directory
+timbre batch ./my_audio_folder/
 timbre-batch ./my_audio_folder/
+
+# Build or inspect the label cache
+timbre-cache
+timbre-cache-info
+
+# Validate generated JSON records
+timbre-validate --input ./out/json
 ```
 
 ## Requirements
