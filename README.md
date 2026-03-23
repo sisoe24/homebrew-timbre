@@ -22,14 +22,15 @@ timbre analyze path/to/file.mp3 --output-dir ./out --markdown
 
 # Analyze a whole directory
 timbre batch ./my_audio_folder/
-timbre-batch ./my_audio_folder/
 
-# Build or inspect the label cache
-timbre-cache
-timbre-cache-info
+# Inspect or switch vocabulary context
+timbre vocab info
+timbre vocab list
+timbre vocab add ./config/vocabulary.yaml
+timbre vocab use
 
 # Validate generated JSON records
-timbre-validate --input ./out/json
+timbre validate --input ./out/json
 ```
 
 ## Requirements
