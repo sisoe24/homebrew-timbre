@@ -52,37 +52,14 @@ class Timbre < Formula
     system pip, "install", "-r", buildpath/"filtered_requirements.txt"
 
     # ── Wrapper scripts ───────────────────────────────────────────────────────
-    # Mirror the repo's `timbre.py` subcommand structure while keeping
-    # convenient top-level commands in Homebrew's bin prefix.
+    # `timbre` is the canonical entrypoint. Keep a few convenience aliases for
+    # the dedicated top-level commands that still exist in project metadata.
     (bin/"timbre").write <<~EOS
       #!/bin/bash
       exec "#{libexec}/venv/bin/python" "#{libexec}/timbre.py" "$@"
     EOS
     chmod 0755, bin/"timbre"
 
-    (bin/"timbre-batch").write <<~EOS
-      #!/bin/bash
-      exec "#{libexec}/venv/bin/python" "#{libexec}/timbre.py" batch "$@"
-    EOS
-    chmod 0755, bin/"timbre-batch"
-
-    (bin/"timbre-cache").write <<~EOS
-      #!/bin/bash
-      exec "#{libexec}/venv/bin/python" "#{libexec}/timbre.py" cache "$@"
-    EOS
-    chmod 0755, bin/"timbre-cache"
-
-    (bin/"timbre-cache-info").write <<~EOS
-      #!/bin/bash
-      exec "#{libexec}/venv/bin/python" "#{libexec}/timbre.py" cache-info "$@"
-    EOS
-    chmod 0755, bin/"timbre-cache-info"
-
-    (bin/"timbre-validate").write <<~EOS
-      #!/bin/bash
-      exec "#{libexec}/venv/bin/python" "#{libexec}/timbre.py" validate "$@"
-    EOS
-    chmod 0755, bin/"timbre-validate"
   end
 
   def caveats
@@ -97,9 +74,9 @@ class Timbre < Formula
         timbre analyze path/to/file.wav
         timbre analyze path/to/file.mp3 --output-dir ./out --markdown
         timbre batch ./my_audio_folder/
-        timbre-batch ./my_audio_folder/
-        timbre-cache
-        timbre-cache-info
+        timbre vocab info
+        timbre vocab list
+        timbre validate --input ./out/json
 
       Docs: https://github.com/sisoe24/timbre
     EOS
@@ -108,9 +85,9 @@ class Timbre < Formula
   test do
     # Smoke test: the CLI should respond to --help without errors
     assert_match "Usage:", shell_output("#{bin}/timbre --help")
-    assert_match "Usage:", shell_output("#{bin}/timbre-batch --help")
-    assert_match "Usage:", shell_output("#{bin}/timbre-cache --help")
-    assert_match "Usage:", shell_output("#{bin}/timbre-cache-info --help")
-    assert_match "Usage:", shell_output("#{bin}/timbre-validate --help")
+    assert_match "Usage:", shell_output("#{bin}/timbre analyze --help")
+    assert_match "Usage:", shell_output("#{bin}/timbre batch --help")
+    assert_match "Usage:", shell_output("#{bin}/timbre vocab --help")
+    assert_match "Usage:", shell_output("#{bin}/timbre validate --help")
   end
 end
